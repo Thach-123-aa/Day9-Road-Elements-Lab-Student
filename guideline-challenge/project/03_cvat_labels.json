@@ -1,1 +1,149 @@
-[]
+[
+  {
+    "name": "lane/double_white",
+    "color": "#ECEFF1",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/double_yellow",
+    "color": "#E65100",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/single_white_dashed",
+    "color": "#FFFFFF",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/single_white_solid",
+    "color": "#B0BEC5",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/single_yellow_dashed",
+    "color": "#F9A825",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/single_yellow_solid",
+    "color": "#F57F17",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/chevron_area",
+    "color": "#D32F2F",
+    "type": "polygon",
+    "attributes": [
+      {
+        "name": "occluded",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  }
+]
