@@ -1,1 +1,15 @@
 sample_id,split,tags,reason
+BDD02,example,negative,Minh hoa case khong co vach phan lan nao trong khung hinh chi co crosswalk
+BDD13,example,conflict;ambiguity,Minh hoa rule vach chuyen doi kieu lien-dut-lien phai tach nhieu polyline
+BDD15,example,ambiguity;low_visibility,Minh hoa rule bo qua khi vach qua mo khong phan biet duoc
+BDD17,example,occlusion;low_visibility,Minh hoa rule chi label phan nhin thay khi bi mo do mua
+BDD01,calibration,normal,Anh multi-lane ro dung cho ca nhom calibration ban dau
+BDD10,calibration,critical;occlusion,Vach lien bi cong trinh che mot doan test annotator co giu dung class khong
+BDD16,calibration,occlusion;conflict,Vach bi xe che test rule noi qua occlusion cong needs_review
+BDD22,calibration,ambiguity,Vach dut tu nhien de nham voi lien mon
+BDD26,calibration,low_visibility,Ban dem test rule label cong needs_review thay vi bo qua
+BDD05,blind,normal,Anh thi de vach ro rang
+BDD19,blind,edge;ambiguity,Vach mo bong troc kho phan biet dashed that hay solid mon
+BDD25,blind,edge;low_visibility,Troi chang vang mua anh den phan chieu
+BDD08,blind,critical,Vach lien vang tach lan HOV gan sai thanh allowed gay hau qua lon
+BDD24,blind,ambiguity;occlusion,Tuyet che phan lon vach kho xac dinh kieu

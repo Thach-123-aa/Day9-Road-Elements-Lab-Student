@@ -1,15 +1,15 @@
 [
   {
-    "name": "lane/double_white",
-    "color": "#ECEFF1",
+    "name": "lane/single_dashed",
+    "color": "#FFEB3B",
     "type": "polyline",
     "attributes": [
       {
-        "name": "occluded",
+        "name": "lane_change",
         "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
+        "input_type": "select",
+        "default_value": "__undefined__",
+        "values": ["__undefined__", "allowed", "not_allowed", "unknown"]
       },
       {
         "name": "needs_review",
@@ -21,100 +21,58 @@
     ]
   },
   {
-    "name": "lane/double_yellow",
+    "name": "lane/single_solid",
+    "color": "#9E9E9E",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "lane_change",
+        "mutable": false,
+        "input_type": "select",
+        "default_value": "__undefined__",
+        "values": ["__undefined__", "allowed", "not_allowed", "unknown"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/double_dashed",
+    "color": "#FBC02D",
+    "type": "polyline",
+    "attributes": [
+      {
+        "name": "lane_change",
+        "mutable": false,
+        "input_type": "select",
+        "default_value": "__undefined__",
+        "values": ["__undefined__", "allowed", "not_allowed", "unknown"]
+      },
+      {
+        "name": "needs_review",
+        "mutable": false,
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": ["false"]
+      }
+    ]
+  },
+  {
+    "name": "lane/double_solid",
     "color": "#E65100",
     "type": "polyline",
     "attributes": [
       {
-        "name": "occluded",
+        "name": "lane_change",
         "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      },
-      {
-        "name": "needs_review",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      }
-    ]
-  },
-  {
-    "name": "lane/single_white_dashed",
-    "color": "#FFFFFF",
-    "type": "polyline",
-    "attributes": [
-      {
-        "name": "occluded",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      },
-      {
-        "name": "needs_review",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      }
-    ]
-  },
-  {
-    "name": "lane/single_white_solid",
-    "color": "#B0BEC5",
-    "type": "polyline",
-    "attributes": [
-      {
-        "name": "occluded",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      },
-      {
-        "name": "needs_review",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      }
-    ]
-  },
-  {
-    "name": "lane/single_yellow_dashed",
-    "color": "#F9A825",
-    "type": "polyline",
-    "attributes": [
-      {
-        "name": "occluded",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      },
-      {
-        "name": "needs_review",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
-      }
-    ]
-  },
-  {
-    "name": "lane/single_yellow_solid",
-    "color": "#F57F17",
-    "type": "polyline",
-    "attributes": [
-      {
-        "name": "occluded",
-        "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
+        "input_type": "select",
+        "default_value": "__undefined__",
+        "values": ["__undefined__", "allowed", "not_allowed", "unknown"]
       },
       {
         "name": "needs_review",
@@ -131,11 +89,11 @@
     "type": "polygon",
     "attributes": [
       {
-        "name": "occluded",
+        "name": "lane_change",
         "mutable": false,
-        "input_type": "checkbox",
-        "default_value": "false",
-        "values": ["false"]
+        "input_type": "select",
+        "default_value": "__undefined__",
+        "values": ["__undefined__", "allowed", "not_allowed", "unknown"]
       },
       {
         "name": "needs_review",

@@ -1,6 +1,6 @@
 # Annotation guideline — Vạch kẻ làn nào cho phép đổi làn
 
-**Version:** v2
+**Version:** v3
 
 <!--
 v0 = chưa có bản nháp. Đổi dòng Version ở trên thành v1 khi xong bản nháp đầu, v2 sau calibration, v3 sau blind
@@ -17,89 +17,96 @@ Ví dụ trong guideline chỉ dùng ảnh split example hoặc calibration, kh�
 Xác định từng đoạn vạch kẻ làn cạnh làn xe mình (ego lane) là **được phép đổi làn** hay **không được phép đổi làn**,
 phục vụ module hỗ trợ/quyết định chuyển làn của xe tự lái.
 
-**Trong scope:** mọi đoạn vạch phân chia làn xe (đơn, đôi, cả vạch xương cá) cạnh làn xe ego hoặc làn kề liền sát,
-nhìn thấy được trong ảnh.
+**Trong scope:** mọi đoạn vạch phân chia làn xe (đơn, đôi, cả vạch xương cá — chevron) cạnh làn xe ego hoặc làn kề
+liền sát, nhìn thấy được trong ảnh.
 
 **Ngoài scope:** vạch qua đường (crosswalk), mép lề đường/vỉa hè (road curb) dù sơn màu gì, ký hiệu hoặc chữ sơn
 trên mặt đường (mũi tên, chữ "ONLY", biểu tượng xe đạp), biển báo, đèn tín hiệu.
 
 ## 2. Annotation unit
 
-Task dùng **ảnh tĩnh** (image), không phải video/track. Một instance là **một đoạn vạch liên tục cùng class**
-(cùng màu, cùng số nét, cùng kiểu nét). Khi kiểu vạch đổi giữa đường (ví dụ từ dashed chuyển sang solid trước vạch
-dừng), kết thúc polyline hiện tại và bắt đầu polyline mới tại điểm đổi kiểu.
+Task dùng **ảnh tĩnh** (image), không phải video/track. Một instance là **một đoạn vạch liên tục cùng class**. Khi
+kiểu vạch đổi giữa đường (ví dụ từ liền chuyển thành đứt rồi lại thành liền — xem mục 6, BDD13), kết thúc polyline
+hiện tại và bắt đầu polyline mới tại điểm đổi kiểu — **không** vẽ một đường xuyên suốt qua nhiều kiểu.
 
 ## 3. Geometry rule
 
-- Dùng **Polyline** cho mọi loại vạch kẻ, **trừ `lane/chevron_area`** — vạch xương cá là một **vùng** (không phải
-  đường), phải dùng **Polygon**.
-- Vẽ theo đúng **tim/biên** lane marking theo quy ước của bài, không nối tắt qua vùng không có vạch.
+- Dùng **Polyline** cho mọi loại vạch kẻ (`single_dashed`, `single_solid`, `double_dashed`, `double_solid`).
+- Riêng `lane/chevron_area` (vạch xương cá) là một **vùng**, không phải đường — dùng **Polygon**.
+- Vẽ theo đúng tim/biên lane marking theo quy ước của bài, không nối tắt qua vùng không có vạch.
 - Giữ hướng vẽ nhất quán trong cùng dataset.
 - Kết thúc polyline tại điểm lane marking không còn đủ bằng chứng thị giác.
-- Không dùng Polygon để thay cho lane marking chỉ vì vùng vạch có bề rộng (trừ chevron_area).
 - Không tự thêm class lane mới ngoài danh sách cho phép.
 - Geometry tolerance: lệch tâm vạch ≤ 3px mỗi điểm.
 
 ## 4. Taxonomy
 
-**v2 — thêm phân biệt nét đứt/nét liền cho vạch đơn.** Lý do đổi từ v1: nhiều ảnh trong `data/bdd100k` có cả đoạn
-nét đứt lẫn nét liền của cùng một màu vạch, gộp chung vào một class sẽ mất thông tin quyết định đổi làn (dashed
-= allowed, solid = not_allowed) — hai kiểu nét khác nhau phải là hai class khác nhau, không thể coi là cùng một
-class rồi tự suy luận qua attribute.
-
 | Class | Định nghĩa & phạm vi áp dụng | Quyết định |
 |---|---|---|
-| `lane/double_white` | Vạch đôi trắng (liền/đứt) — phân chia các làn xe cùng chiều, không được lấn làn/chuyển làn tuỳ tiện | `not_allowed` |
-| `lane/double_yellow` | Vạch đôi vàng (liền/đứt) — phân chia 2 chiều xe chạy ngược chiều nhau, cấm lấn làn/vượt | `not_allowed` |
-| `lane/single_white_dashed` | Vạch đơn trắng nét đứt — phân chia làn cùng chiều | `allowed` |
-| `lane/single_white_solid` | Vạch đơn trắng nét liền — phân chia làn cùng chiều | `not_allowed` |
-| `lane/single_yellow_dashed` | Vạch đơn vàng nét đứt — tim đường 2 chiều, phía nét đứt được vượt | `allowed` |
-| `lane/single_yellow_solid` | Vạch đơn vàng nét liền — tim đường 2 chiều hoặc mép đường | `not_allowed` |
+| `lane/single_dashed` | Vạch đơn nét đứt — phân chia làn cùng chiều | `allowed` |
+| `lane/single_solid` | Vạch đơn nét liền — phân chia làn cùng chiều | `not_allowed` |
+| `lane/double_dashed` | Vạch đôi nét đứt (hiếm) | `allowed` |
+| `lane/double_solid` | Vạch đôi nét liền — phân chia 2 chiều xe chạy ngược chiều nhau, cấm lấn làn/vượt | `not_allowed` |
 | `lane/chevron_area` | Vạch xương cá — vùng cấm đi vào | `not_allowed` |
 
-Quyết định đổi làn nằm ngay trong **tên class** (không cần attribute riêng để chọn `allowed`/`not_allowed`) — vì
-mỗi class đã có nghĩa cố định theo luật giao thông. Mỗi class có 2 attribute:
+Mỗi class có 2 attribute:
 
-- **`occluded`** (checkbox): tick khi vạch bị vật khác che một phần nhưng vẫn suy luận được hình dạng thật (xem
-  mục 6, ví dụ BDD16).
-- **`needs_review`** (checkbox): tick khi không chắc chắn về class dù đã đọc guideline.
+- **`lane_change`** (select, mặc định `__undefined__` để ép chọn): `allowed` / `not_allowed` / `unknown`.
+- **`needs_review`** (checkbox): tick khi không chắc chắn dù đã đọc guideline.
 
-Bảng đầy đủ và JSON khớp 1:1 ở `03_ontology_and_cvat_setup.md` / `03_cvat_labels.json` — hai nơi phải khớp nhau.
+Không phân biệt màu (trắng/vàng gộp chung) — quyết định đổi làn dựa trên số nét (đơn/đôi) và kiểu nét (đứt/liền),
+annotator tự gán `lane_change` theo bảng trên, không suy luận thêm. Bảng đầy đủ khớp 1:1 với
+`03_ontology_and_cvat_setup.md` / `03_cvat_labels.json`.
 
 ## 5. Inclusion / exclusion
 
-**Bắt buộc label:** mọi đoạn vạch phân làn (đơn/đôi, đứt/liền, cả chevron_area) cạnh làn ego hoặc làn liền kề.
+**Bắt buộc label:** mọi đoạn vạch phân làn (đơn/đôi, đứt/liền, chevron) cạnh làn ego hoặc làn liền kề.
 
 **Ignore (không vẽ):**
-- Vạch qua đường (crosswalk), kể cả loại màu vàng dạng thang.
-- Mép lề đường/vỉa hè (curb), kể cả curb sơn sọc đỏ-trắng (khu cấm dừng đỗ).
-- Chữ, mũi tên, biểu tượng sơn trên mặt đường (ví dụ ký hiệu làn xe đạp, chữ "ONLY").
+- Vạch qua đường (crosswalk).
+- Mép lề đường/vỉa hè (curb).
+- Chữ, mũi tên, biểu tượng sơn trên mặt đường.
 - Vạch của làn quá xa, không liên quan đến ego lane hoặc làn kề trực tiếp.
 
 ## 6. Visibility / occlusion
 
-Rule cụ thể đúc kết từ soi ảnh thật trong `data/bdd100k`:
+Rule đúc kết từ soi ảnh thật trong `data/bdd100k` (edge case đầy đủ ở `04_edge_cases/edge_case_cards.md`):
 
-- **Vạch quá mờ, không còn phân biệt được loại nào** (ví dụ BDD15): **có thể không vẽ** — không ép đoán khi bằng
-  chứng thị giác không đủ.
-- **Ban đêm, không đủ sáng để xác định làn** (ví dụ BDD26): **không đánh** (không tạo object) khi không đủ ánh
-  sáng để xác định.
-- **Đoạn đường đang sửa làm vạch nét liền bị mất một khoảng ngắn** (ví dụ BDD10): **vẫn gán là vạch nét liền** —
-  khoảng mất do công trình không đổi bản chất của vạch.
-- **Vạch dài nhưng có các đoạn đứt quãng đều nhau** (ví dụ BDD22): **vẫn tính là vạch nét đứt** — cần nhìn kỹ
-  khoảng cách giữa các đoạn để phân biệt với vạch liền đã bị mòn/bong tróc.
-- **Vạch bị xe phía trước che một phần** (ví dụ BDD16, vạch đứt trắng bị bánh xe/thân xe che mất một khoảng):
-  **LABEL — vẫn vẽ, gán `occluded = true`.** Lý do: downstream model đọc output thực tế từ camera và có thể
-  predict được vạch tồn tại phía sau xe che; nếu **không** gán (bỏ đoạn bị che), model sẽ học sai rằng vạch không
-  tồn tại ở đó, trong khi thực tế vạch vẫn liên tục, chỉ là camera không thấy được đoạn đó.
+- **Vạch quá mờ, không còn phân biệt được loại nào** (BDD15): **có thể không vẽ** — không ép đoán khi bằng chứng
+  thị giác không đủ.
+- **Ban đêm, không nhìn rõ vạch thuộc làn nào** (BDD26): **vẫn Label**, nhưng tick `needs_review = true` — khác
+  với case quá mờ (BDD15), ở đây vẫn còn thấy được hình dạng vạch, chỉ không chắc chắn hoàn toàn nên đánh dấu để
+  người khác xem lại, không bỏ qua.
+- **Đoạn đường đang sửa làm vạch nét liền bị mất một khoảng ngắn** (BDD10): **vẫn gán là vạch nét liền**
+  (`single_solid`, `lane_change = not_allowed`) — khoảng mất do công trình không đổi bản chất của vạch, không tick
+  `needs_review`.
+- **Vạch dài nhưng có các đoạn đứt quãng đều nhau** (BDD22): **vẫn tính là vạch nét đứt** — cần nhìn kỹ khoảng cách
+  giữa các đoạn để phân biệt với vạch liền đã bị mòn/bong tróc.
+- **Vạch bị vật cản (xe) che một phần** (BDD16, vạch đứt trắng bị bánh xe/thân xe phía trước che mất một khoảng):
+  **Label + tick `needs_review = true`** — vẫn vẽ nối qua đoạn bị che, suy luận hình dạng thật dựa trên 2 đầu còn
+  thấy được, gán `lane_change` theo đúng kiểu vạch quan sát được. Lý do: downstream model đọc output thực tế từ
+  camera và có thể predict được vạch tồn tại phía sau xe che; nếu bỏ đoạn bị che, model sẽ học sai rằng vạch không
+  tồn tại ở đó. Tick `needs_review` để người review biết object này có phần suy luận từ occlusion, không phải quan
+  sát trực tiếp 100%.
+- **Ảnh không có vạch phân làn nào trong khung hình** (BDD02, giao lộ chỉ có crosswalk): **IGNORE cả ảnh** — không
+  tạo object nào, gắn tag `negative` ở `sample_pack.csv`. Đây không phải lỗi bỏ sót.
+- **Vạch bị mờ/che bởi thời tiết (mưa, sương)** (BDD17): **Label — chỉ phần nhìn thấy được**, khác với case bị xe
+  che ở trên. Không được đoán phần bị mờ, không nối polyline qua đoạn không thấy rõ, tránh nhiễu dữ liệu — vì mờ
+  do thời tiết không cho bằng chứng chắc chắn về hình dạng thật như khi bị vật cản đặc che khuất.
+- **Vạch chuyển đổi kiểu trên cùng một luồng giao thông** (BDD13: liền → đứt → liền): **Label thành các đoạn
+  polyline riêng biệt**, mỗi đoạn đúng class của nó (`single_solid`, `single_dashed`, `single_solid`) — không vẽ
+  một đường xuyên suốt, để model nhận diện được từng phần riêng biệt của vạch đường.
 
 ## 7. Ambiguity / escalation
 
 | Tình huống | Quyết định | Thể hiện trong CVAT |
 |---|---|---|
-| Vạch quá mờ, không phân biệt được loại | IGNORE (không vẽ) | Không tạo object |
-| Ban đêm không đủ sáng xác định làn | IGNORE (không vẽ) | Không tạo object |
-| Vạch bị công trình/vật cản che một phần nhưng suy luận được | LABEL | Class đúng + `occluded = true` |
+| Vạch quá mờ, không phân biệt được loại nào | IGNORE (không vẽ) | Không tạo object |
+| Ban đêm, thấy hình dạng nhưng không chắc chắn | LABEL | Class đúng + `needs_review = true` |
+| Bị vật cản (xe) che một phần, suy luận được hình dạng thật | LABEL + ESCALATE | Class đúng, nối qua đoạn che, `needs_review = true` |
+| Bị mờ/che bởi thời tiết (mưa, sương) | LABEL phần thấy được | Chỉ vẽ đoạn nhìn rõ, không đoán phần còn lại |
+| Vạch chuyển đổi kiểu giữa đường | LABEL nhiều đoạn | Mỗi đoạn 1 polyline riêng, đúng class của nó |
+| Ảnh không có vạch phân làn nào trong khung hình | IGNORE cả ảnh | Không tạo object; tag `negative` ở `sample_pack.csv` |
 | Không chắc chắn về class dù đã đọc guideline | ESCALATE | `needs_review = true` |
 
 ## 8. Temporal rule
@@ -110,15 +117,18 @@ Không áp dụng — task ảnh tĩnh.
 
 | sample_id | Thấy gì | Expected output | Rule áp dụng |
 |---|---|---|---|
-| BDD01 | Cao tốc nhiều làn, vạch trắng đứt + vạch vàng liền mép trái rõ | `single_white_dashed`; `single_yellow_solid` mép trái | Mục 4 |
-| BDD07 | Ngã tư khu dân cư, vạch đôi liền vàng ở giữa, có crosswalk | `double_yellow`; crosswalk **không vẽ** | Mục 5 (ignore crosswalk) |
-| BDD15 | Vạch mờ, không phân biệt được loại | **Không vẽ** | Mục 6 |
-| BDD16 | Vạch đứt trắng bị bánh xe phía trước che một khoảng | `single_white_dashed`, `occluded = true` | Mục 6 |
+| BDD01 | Cao tốc nhiều làn, vạch trắng đứt + vạch vàng liền mép trái rõ | `single_dashed(allowed)`; `single_solid(not_allowed)` mép trái | Mục 4 |
+| BDD16 | Vạch đứt trắng bị bánh xe phía trước che một khoảng | `single_dashed(allowed)`, nối qua đoạn che, `needs_review=true` | Mục 6 |
+| BDD17 | Vạch bị mờ do mưa | `single_*` chỉ phần nhìn thấy được | Mục 6 |
+| BDD13 | Vạch chuyển từ liền sang đứt rồi lại liền trên cùng luồng | 3 polyline riêng: `single_solid`, `single_dashed`, `single_solid` | Mục 6 |
+| BDD02 | Giao lộ chỉ có crosswalk, không có vạch phân làn | Không tạo object, tag `negative` | Mục 6 |
 
 ## 10. Common mistakes
 
-- Gộp nét đứt và nét liền cùng màu vào một class — sai từ v2, phải tách theo đúng bảng mục 4.
+- Vẽ một polyline xuyên suốt qua đoạn vạch đổi kiểu (BDD13) thay vì tách thành nhiều đoạn.
+- Nối qua đoạn bị mờ do thời tiết (BDD17) như thể suy luận được — chỉ được nối qua khi bị **vật cản** che (BDD16),
+  không phải khi bị **mờ/nhoè** do thời tiết.
+- Bỏ qua (không vẽ) khi chỉ là "không chắc chắn" (BDD26) — chỉ bỏ qua khi thật sự **quá mờ không phân biệt được**
+  (BDD15); còn lại vẫn Label + `needs_review`.
 - Vẽ luôn crosswalk hoặc road curb vì trông giống "vạch" — ngoài scope, không vẽ.
-- Bỏ qua đoạn vạch bị che thay vì gán `occluded = true` — làm model học sai là vạch không tồn tại ở đó.
-- Cố đoán class khi ảnh quá mờ/quá tối thay vì để trống (không vẽ) theo mục 6.
-- Dùng Polygon cho vạch thường (chỉ `chevron_area` mới dùng Polygon).
+- Quên đổi `lane_change` khỏi `__undefined__` trước khi export.

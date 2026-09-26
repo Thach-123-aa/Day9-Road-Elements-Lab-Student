@@ -1,1 +1,11 @@
 sample_id,decision_id,expected,severity,rationale
+BDD05,d1,label=lane/single_solid lane_change=not_allowed,major,vach vang lien mep trai phan cach voi le duong khong duoc doi lan qua do
+BDD05,d2,geometry: polyline bam tam vach vang lien mep trai lech <=3px,minor,kiem tra do chinh xac hinh hoc co ban tren doan vach ro rang nhat
+BDD05,d3,label=lane/single_solid lane_change=not_allowed,major,vach trang lien tach lan thoat/nhap ben phai khong duoc cat ngang tuy tien
+BDD19,d1,label=lane/single_dashed lane_change=allowed,major,vach trang dut giua 2 lan cung chieu neu gan sai thanh not_allowed se chan nham quyet dinh doi lan hop le
+BDD19,d2,label=lane/single_solid lane_change=not_allowed needs_review=true,minor,vach lien mep phai bi mon/phai nhin ky de phan biet voi vach dut that theo muc 6 guideline
+BDD25,d1,label=lane/single_dashed lane_change=allowed needs_review=true,major,vach dut giua duong bi anh den phan chieu tren mat duong uot van con thay duoc nhung khong chac 100%
+BDD25,d2,geometry: polyline bam tam doan vach dut ro nhat lech <=3px,minor,kiem tra hinh hoc trong dieu kien anh sang yeu
+BDD08,d1,label=lane/single_solid lane_change=not_allowed,critical,vach vang lien tach lan HOV/carpool ben trai gan sai thanh allowed se khien xe doi vao lan cam tuy tien vi pham luat
+BDD08,d2,label=lane/single_dashed lane_change=allowed,major,vach trang dut giua 2 lan thuong ben phai
+BDD24,d1,label=unknown lane_change=unknown needs_review=true,critical,tuyet che gan het vach chi con mot doan cheo trang gan dau xe khong du bang chung de xac dinh chac chan loai vach neu peer doan bua thay vi escalate la loi nang
