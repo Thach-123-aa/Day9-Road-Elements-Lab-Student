@@ -1,6 +1,6 @@
 # Annotation guideline — Vạch kẻ làn nào cho phép đổi làn
 
-**Version:** v3
+**Version:** v4
 
 <!--
 v0 = chưa có bản nháp. Đổi dòng Version ở trên thành v1 khi xong bản nháp đầu, v2 sau calibration, v3 sau blind
@@ -17,11 +17,20 @@ Ví dụ trong guideline chỉ dùng ảnh split example hoặc calibration, kh�
 Xác định từng đoạn vạch kẻ làn cạnh làn xe mình (ego lane) là **được phép đổi làn** hay **không được phép đổi làn**,
 phục vụ module hỗ trợ/quyết định chuyển làn của xe tự lái.
 
-**Trong scope:** mọi đoạn vạch phân chia làn xe (đơn, đôi, cả vạch xương cá — chevron) cạnh làn xe ego hoặc làn kề
-liền sát, nhìn thấy được trong ảnh.
+**Trong scope:** mọi đoạn vạch phân chia làn xe (đơn, đôi, cả vạch xương cá — chevron) cạnh làn xe ego hoặc làn kề,
+nhìn thấy được trong ảnh — **kể cả vạch sơn mép ngoài cùng của làn xe** (edge line, nằm sát lề nhưng vẫn là vạch sơn
+phân định làn, ví dụ BDD01). "Làn kề" không giới hạn ở làn sát ego — bao gồm cả vạch ranh giới phía ngoài của làn kề
+(giữa làn kề và làn tiếp theo), miễn còn nhìn thấy trong khung hình.
 
-**Ngoài scope:** vạch qua đường (crosswalk), mép lề đường/vỉa hè (road curb) dù sơn màu gì, ký hiệu hoặc chữ sơn
-trên mặt đường (mũi tên, chữ "ONLY", biểu tượng xe đạp), biển báo, đèn tín hiệu.
+**Ngoài scope:** vạch qua đường (crosswalk), **mép lề đường/vỉa hè vật lý** (road curb — gờ bê tông, đá, không phải
+vạch sơn) dù sơn màu gì, ký hiệu hoặc chữ sơn trên mặt đường (mũi tên, chữ "ONLY", biểu tượng xe đạp), biển báo, đèn
+tín hiệu.
+
+> **v4 — làm rõ khác biệt "road curb" (ngoài scope) và "edge line mép làn" (trong scope):** ở v3, mục 1/5 nói loại
+> trừ "mép lề đường" nhưng ví dụ BDD01 mục 9 lại label vạch vàng liền mép trái, gây mâu thuẫn — annotator (Group 1
+> peer-test) phải tự suy diễn theo ví dụ. v4 tách rõ 2 khái niệm: **road curb** = ranh giới vật lý ngoài cùng của
+> mặt đường (không phải vạch sơn) → ignore; **edge line** = vạch sơn phân làn nằm ở vị trí ngoài cùng (dù sát lề) →
+> vẫn label bình thường theo class tương ứng.
 
 ## 2. Annotation unit
 
@@ -64,9 +73,15 @@ annotator tự gán `lane_change` theo bảng trên, không suy luận thêm. B�
 
 **Ignore (không vẽ):**
 - Vạch qua đường (crosswalk).
-- Mép lề đường/vỉa hè (curb).
+- Mép lề đường/vỉa hè **vật lý** (curb — gờ bê tông/đá, không phải vạch sơn).
 - Chữ, mũi tên, biểu tượng sơn trên mặt đường.
-- Vạch của làn quá xa, không liên quan đến ego lane hoặc làn kề trực tiếp.
+- Vạch của làn quá xa, không còn nhìn thấy được trong khung hình.
+
+**v4 — vạch đứt tự nhiên vẽ nối xuyên suốt:** một đoạn vạch đứt (`single_dashed`/`double_dashed`) vốn có khoảng hở
+giữa các nét sơn — đây là **bản chất của chính nó**, không phải bị che. Vẽ **một polyline duy nhất nối qua các
+khoảng hở này** (đi theo tim của toàn bộ đoạn vạch đứt), không tách thành nhiều polyline riêng cho từng nét sơn.
+Khác với mục 6: nối qua khoảng hở tự nhiên của vạch đứt ≠ nối qua đoạn bị **vật cản/thời tiết che** — hai rule độc
+lập, xem ví dụ phân biệt ở mục 9 (BDD22 vs BDD16/BDD17).
 
 ## 6. Visibility / occlusion
 
@@ -89,7 +104,17 @@ Rule đúc kết từ soi ảnh thật trong `data/bdd100k` (edge case đầy đ
   tồn tại ở đó. Tick `needs_review` để người review biết object này có phần suy luận từ occlusion, không phải quan
   sát trực tiếp 100%.
 - **Ảnh không có vạch phân làn nào trong khung hình** (BDD02, giao lộ chỉ có crosswalk): **IGNORE cả ảnh** — không
-  tạo object nào, gắn tag `negative` ở `sample_pack.csv`. Đây không phải lỗi bỏ sót.
+  tạo object nào, gắn **tag `negative`** (từ v4, `negative` là 1 CVAT tag thật trong `03_cvat_labels.json`, không
+  chỉ ghi ở `sample_pack.csv` như v3 — annotator bấm **Setup tag** để đánh dấu ảnh, phân biệt rõ "cố ý không có gì
+  để vẽ" với "quên vẽ"). Đây không phải lỗi bỏ sót.
+- **[v4 — bắt buộc, sửa lỗi critical phát hiện qua blind test với Group 1, sample BDD24]** Chỉ nhìn thấy được **một
+  đoạn ngắn** của vạch, và **cả 2 đầu đoạn đó đều bị che/mờ** (không còn bằng chứng ở đầu nào để xác định đoạn tiếp
+  theo là đứt hay liền): **bắt buộc `lane_change = unknown`** và `needs_review = true`. **Không được** tự chọn
+  `allowed`/`not_allowed` dựa trên đoạn ngắn nhìn thấy dù đã tick `needs_review` — tick `needs_review` một mình
+  không thay thế được việc phải chọn đúng `unknown`. Đây là gap khiến peer (Group 1) chọn `single_dashed/allowed`
+  cho BDD24 thay vì `unknown/unknown` như gold kỳ vọng, gây 1 critical escape trong `transfer_score.csv` — v3 chỉ
+  nói "tick needs_review khi không chắc" nhưng không nói rõ trường hợp này còn phải đổi `lane_change` thành
+  `unknown`, nên peer hiểu lầm là được phép vừa escalate vừa tự đoán class.
 - **Vạch bị mờ/che bởi thời tiết (mưa, sương)** (BDD17): **Label — chỉ phần nhìn thấy được**, khác với case bị xe
   che ở trên. Không được đoán phần bị mờ, không nối polyline qua đoạn không thấy rõ, tránh nhiễu dữ liệu — vì mờ
   do thời tiết không cho bằng chứng chắc chắn về hình dạng thật như khi bị vật cản đặc che khuất.
@@ -106,7 +131,8 @@ Rule đúc kết từ soi ảnh thật trong `data/bdd100k` (edge case đầy đ
 | Bị vật cản (xe) che một phần, suy luận được hình dạng thật | LABEL + ESCALATE | Class đúng, nối qua đoạn che, `needs_review = true` |
 | Bị mờ/che bởi thời tiết (mưa, sương) | LABEL phần thấy được | Chỉ vẽ đoạn nhìn rõ, không đoán phần còn lại |
 | Vạch chuyển đổi kiểu giữa đường | LABEL nhiều đoạn | Mỗi đoạn 1 polyline riêng, đúng class của nó |
-| Ảnh không có vạch phân làn nào trong khung hình | IGNORE cả ảnh | Không tạo object; tag `negative` ở `sample_pack.csv` |
+| Ảnh không có vạch phân làn nào trong khung hình | IGNORE cả ảnh | Không tạo object; tick CVAT tag `negative` |
+| Chỉ thấy 1 đoạn ngắn, cả 2 đầu bị che/mờ, không xác định được đứt/liền | ESCALATE bắt buộc | `lane_change = unknown` **và** `needs_review = true` — không được tự đoán class |
 | Không chắc chắn về class dù đã đọc guideline | ESCALATE | `needs_review = true` |
 
 ## 8. Temporal rule
@@ -122,6 +148,7 @@ Không áp dụng — task ảnh tĩnh.
 | BDD17 | Vạch bị mờ do mưa | `single_*` chỉ phần nhìn thấy được | Mục 6 |
 | BDD13 | Vạch chuyển từ liền sang đứt rồi lại liền trên cùng luồng | 3 polyline riêng: `single_solid`, `single_dashed`, `single_solid` | Mục 6 |
 | BDD02 | Giao lộ chỉ có crosswalk, không có vạch phân làn | Không tạo object, tag `negative` | Mục 6 |
+| BDD24 | Chỉ 1 đoạn ngắn nhìn thấy, 2 đầu bị tuyết/capo che, không rõ đứt hay liền | `lane_change = unknown`, `needs_review = true` — không tự đoán class | Mục 6 (v4) |
 
 ## 10. Common mistakes
 
@@ -130,5 +157,8 @@ Không áp dụng — task ảnh tĩnh.
   không phải khi bị **mờ/nhoè** do thời tiết.
 - Bỏ qua (không vẽ) khi chỉ là "không chắc chắn" (BDD26) — chỉ bỏ qua khi thật sự **quá mờ không phân biệt được**
   (BDD15); còn lại vẫn Label + `needs_review`.
-- Vẽ luôn crosswalk hoặc road curb vì trông giống "vạch" — ngoài scope, không vẽ.
+- Vẽ luôn crosswalk hoặc road curb **vật lý** (gờ bê tông/đá) vì trông giống "vạch" — ngoài scope, không vẽ; nhưng
+  đừng nhầm ngược lại — **vạch sơn mép ngoài làn (edge line) vẫn phải vẽ**, không phải cứ nằm sát lề là bỏ qua.
 - Quên đổi `lane_change` khỏi `__undefined__` trước khi export.
+- **[v4]** Chỉ thấy 1 đoạn ngắn, 2 đầu bị che/mờ, vẫn tự chọn `allowed`/`not_allowed` (dù đã tick `needs_review`)
+  thay vì bắt buộc chọn `unknown` — đây là lỗi **critical**, đã gây 1 lần sai khi Group 1 peer-test blind pack.

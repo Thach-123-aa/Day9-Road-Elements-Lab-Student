@@ -1,8 +1,8 @@
 CVAT task reference — thay mọi placeholder mới là xong.
 
-CVAT version: TODO
-Task calibration (tên, id): TODO
-Task bản cuối theo guideline v3 (tên, id) hoặc lý do không có: TODO
-File export đã nộp (đường dẫn trong repo): TODO
-Guideline version dán trong Guide của task: TODO
-Ghi chú cho người tiếp nhận: TODO
+CVAT version: 2.75.1 (http://localhost:8080)
+Task calibration (ten, id): mixigaming-calib-v3 (5 anh: BDD01, BDD10, BDD16, BDD22, BDD26)
+Task ban cuoi theo guideline v3 (ten, id) hoac ly do khong co: task blind gui peer da tao tu handoff/blind-pack.zip (5 anh: BDD05, BDD08, BDD19, BDD24, BDD25); khong tao them task rieng sau v4 vi gold/sample_pack da khoa, v4 chi sua guideline text + them tag negative
+File export da nop (duong dan trong repo): project/06_calibration_exports/qminh.zip, thach.zip, tuan.zip; project/07_blind_handoff/peer_output/group1-blind.zip
+Guideline version dan trong Guide cua task: v3 (luc calibration va luc gui blind-pack); v4 la ban sua sau khi nhan feedback, chua dan lai vao CVAT vi khong con task nao can ve them
+Ghi chu cho nguoi tiep nhan: con thieu 2/5 nguoi calibration (qminh, thach, tuan da gui; 2 nguoi con lai chua co export) - so lieu 06_calibration_measure.csv/06_calibration_report.csv hien tinh tren 3/5 nguoi

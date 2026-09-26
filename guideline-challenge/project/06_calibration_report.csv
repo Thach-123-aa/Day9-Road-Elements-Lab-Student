@@ -1,1 +1,5 @@
 sample_id,item,values_by_annotator,diagnosis,action,rule_change
+BDD01,so luong object lane/single_solid,qminh=2;thach=0;tuan=3,guideline_gap,add_example,Them anh BDD01 vao muc 9 Examples chi ro doan vach lien o mep trai phai duoc ve rieng khoi doan single_dashed o giua duong
+BDD01,attribute lane_change tren lane/single_dashed,qminh=toan bo __undefined__ (9 object);thach=allowed (6 object);tuan=lan dau __undefined__ sau do allowed,execution_error,coaching,Them buoc Self-QC bat buoc kiem tra khong con gia tri __undefined__ truoc khi export dua vao muc 10 Common mistakes cua 05_qa_plan.md
+BDD10,so luong object lane/single_dashed,qminh=5;thach=0;tuan=4,guideline_gap,revise_rule,Ro rang hoa mo ta anh BDD10 trong guideline vi hien annotator thach khong ve doan net dut nao trong khi 2 nguoi con lai ve 4-5 doan can kiem tra lai anh minh hoa co dung sample khong
+BDD16,attribute lane_change tren lane/chevron_area,qminh=toan bo __undefined__ (4 object);thach=not_allowed (3 object);tuan=not_allowed (3 object),execution_error,coaching,qminh ve dung class chevron_area nhung quen gan lane_change nhac lai rule mac dinh phai doi khoi __undefined__ o muc 10

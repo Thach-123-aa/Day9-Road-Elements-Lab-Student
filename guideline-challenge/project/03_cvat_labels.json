@@ -103,5 +103,11 @@
         "values": ["false"]
       }
     ]
+  },
+  {
+    "name": "negative",
+    "color": "#607D8B",
+    "type": "tag",
+    "attributes": []
   }
 ]

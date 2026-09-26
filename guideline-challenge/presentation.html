@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mixigaming — Lane Marking Guideline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,560;0,700;1,400&family=Literata:ital,opsz,wght@0,7..72,560;0,7..72,700;1,7..72,560&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --asphalt: #141614;
+    --asphalt-2: #1e221c;
+    --paint: #f4f0e6;
+    --paint-dim: #c4bfb2;
+    --lane: #f0c400;
+    --lane-ink: #1a1600;
+    --allow: #43a047;
+    --deny: #e23b2f;
+    --line: rgba(244, 240, 230, 0.16);
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--asphalt); color: var(--paint); scrollbar-width: none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar, .slide::-webkit-scrollbar { display: none; width: 0; height: 0; }
+  body { font-family: "Be Vietnam Pro", "Segoe UI", sans-serif; font-size: 21px; line-height: 1.35; }
+
+  .edge { position: fixed; z-index: 5; left: 0; top: 0; bottom: 0; width: 18px;
+    background: repeating-linear-gradient(to bottom, var(--lane) 0 26px, var(--asphalt) 26px 42px); }
+
+  header.bar, footer.bar { position: fixed; z-index: 6; left: 18px; right: 0; display: flex; align-items: center;
+    justify-content: space-between; padding: 14px 28px; background: rgba(20, 22, 20, 0.92); backdrop-filter: blur(8px); }
+  header.bar { top: 0; border-bottom: 1px solid var(--line); }
+  footer.bar { bottom: 0; border-top: 1px solid var(--line); gap: 16px; }
+  .brand { font-family: Literata, Georgia, serif; font-weight: 700; letter-spacing: 0.08em; font-size: 14px; text-transform: uppercase; }
+  .brand span { color: var(--lane); }
+  .hint { color: var(--paint-dim); font-size: 13px; }
+  kbd { font-family: inherit; border: 1px solid var(--line); border-bottom-width: 2px; padding: 1px 7px; border-radius: 4px; }
+
+  .lane-track { flex: 1; height: 4px; background: rgba(244, 240, 230, 0.12); position: relative; overflow: hidden; }
+  .lane-track::before { content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(to right, transparent 0 10px, rgba(244, 240, 230, 0.28) 10px 22px); }
+  .lane-fill { position: absolute; left: 0; top: -2px; bottom: -2px; width: 0; background: var(--lane); box-shadow: 0 0 16px var(--lane); }
+  .km { font-variant-numeric: tabular-nums; font-weight: 700; min-width: 80px; text-align: right; }
+  .km b { color: var(--lane); }
+
+  .deck { position: fixed; inset: 64px 0 64px 18px; }
+  .slide { display: none; height: 100%; overflow: hidden; scrollbar-width: none; padding: 34px 60px 24px; }
+  .slide.is-on { display: block; animation: rise 0.35s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .kicker { margin: 0 0 8px; color: var(--lane); font-size: 14px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  h1 { font-family: Literata, Georgia, serif; font-weight: 560; font-size: clamp(38px, 4.6vw, 62px); line-height: 1.1; margin: 0 0 16px; max-width: 20ch; letter-spacing: -0.02em; }
+  h2 { font-family: Literata, Georgia, serif; font-weight: 560; font-size: clamp(30px, 3.6vw, 46px); line-height: 1.14; margin: 0 0 18px; letter-spacing: -0.02em; }
+  p { margin: 0 0 12px; max-width: 68ch; }
+  .lead { font-size: 25px; max-width: 40ch; }
+  .dim { color: var(--paint-dim); }
+
+  .plate { display: inline-block; background: var(--lane); color: var(--lane-ink); font-weight: 700; padding: 7px 14px 9px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .team { display: inline-block; border: 1px solid var(--line); padding: 6px 14px; border-radius: 999px; color: var(--paint-dim); font-size: 14px; }
+
+  ul, ol { margin: 0; padding-left: 1.2em; max-width: 70ch; }
+  li { margin: 7px 0; }
+  li strong { color: var(--lane); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 16px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--lane); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+  tr:last-child td { border-bottom: 0; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 0.9em; color: var(--paint); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .card { background: var(--asphalt-2); border-top: 4px solid var(--lane); padding: 16px 18px; }
+  .card.deny { border-top-color: var(--deny); }
+  .card.allow { border-top-color: var(--allow); }
+  .card h3 { margin: 0 0 8px; font-size: 20px; }
+  .card p { margin: 0; color: var(--paint-dim); font-size: 16px; }
+
+  .decision { display: inline-block; font-weight: 700; padding: 4px 12px; border-radius: 4px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .decision.allowed { background: rgba(67,160,71,0.18); color: #7fd984; }
+  .decision.not_allowed { background: rgba(226,59,47,0.18); color: #ff8a7f; }
+
+  .ec-grid { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; height: 100%; }
+  .ec-grid img { width: 100%; border: 2px solid var(--line); display: block; }
+  .ec-body p { max-width: 60ch; }
+  .ec-label { font-family: Consolas, monospace; font-size: 14px; color: var(--lane); margin-bottom: 4px; }
+
+  .nav-btn { position: fixed; z-index: 7; top: 50%; transform: translateY(-50%); width: 50px; height: 80px; border: 0; background: transparent; color: var(--paint); font-size: 30px; cursor: pointer; }
+  .nav-btn:hover { color: var(--lane); }
+  .nav-btn.prev { left: 22px; }
+  .nav-btn.next { right: 8px; }
+
+  .cover h1 { max-width: 15ch; font-size: clamp(46px, 5.6vw, 76px); }
+  .cover .sub { font-size: 22px; max-width: 42ch; color: var(--paint-dim); }
+
+  @media (max-height: 820px) {
+    body { font-size: 16px; } .slide { padding: 16px 44px 10px; } h1 { font-size: 36px; } h2 { font-size: 28px; }
+    table, .card p { font-size: 14px; } .ec-grid { grid-template-columns: 240px 1fr; }
+  }
+  @media (max-width: 900px) {
+    body { font-size: 16px; } .slide { padding: 22px 20px 18px 26px; } .grid2, .ec-grid { grid-template-columns: 1fr; } .nav-btn { display: none; }
+  }
+  @media print {
+    .edge, header.bar, footer.bar, .nav-btn { display: none; }
+    .deck { position: static; }
+    .slide, .slide.is-on { display: block; height: auto; page-break-after: always; animation: none; }
+    body { background: white; color: black; }
+  }
+</style>
+</head>
+<body>
+<div class="edge" aria-hidden="true"></div>
+<header class="bar">
+  <div class="brand">Mixigaming <span>·</span> Lane Marking Guideline</div>
+  <div class="hint">Day 9 · Guideline Design Challenge</div>
+</header>
+
+<main class="deck" id="deck">
+
+  <section class="slide cover is-on">
+    <p class="kicker">Nhóm Mixigaming</p>
+    <h1>Vạch kẻ làn nào cho phép đổi làn, vạch nào không?</h1>
+    <p class="sub">Phân biệt các loại vạch kẻ đường để xe nhận biết khi nào có thể chuyển làn, khi nào không được
+      phép — xây guideline để người lạ (nhóm peer) cầm là vẽ đúng ngay, không cần hỏi.</p>
+    <p class="plate">Chấm quy tắc, không chấm ai vẽ đẹp</p>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Bài toán</p>
+    <h2>Một câu hẹp, không phải "gắn nhãn vạch đường"</h2>
+    <p class="lead">Trong ảnh giao thông, phân loại từng đoạn vạch kẻ làn cạnh làn xe mình thành <strong>được phép
+      đổi làn</strong> hay <strong>không được phép đổi làn</strong>, dựa vào số nét và kiểu nét của vạch.</p>
+    <ul>
+      <li><strong>Downstream user:</strong> module hỗ trợ/quyết định chuyển làn của xe tự lái (lane-change assist)</li>
+      <li><strong>Failure nguy hiểm nhất:</strong> gán "được đổi làn" cho một vạch thực tế không cho đổi — xe đổi
+        làn sai luật</li>
+      <li><strong>Dữ liệu:</strong> 26 ảnh <code>data/bdd100k</code> — đa dạng highway / city street / residential,
+        đủ thời tiết, cả ban ngày lẫn đêm</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Taxonomy</p>
+    <h2>7 class — mỗi class có sẵn quyết định mặc định</h2>
+    <table>
+      <thead><tr><th>Class</th><th>Định nghĩa &amp; phạm vi</th><th>Quyết định</th></tr></thead>
+      <tbody>
+        <tr><td><code>lane/double_white</code></td><td>Vạch đôi trắng — phân chia làn cùng chiều, không được lấn làn tuỳ tiện</td><td><span class="decision not_allowed">not_allowed</span></td></tr>
+        <tr><td><code>lane/double_yellow</code></td><td>Vạch đôi vàng — phân chia 2 chiều ngược nhau, cấm vượt</td><td><span class="decision not_allowed">not_allowed</span></td></tr>
+        <tr><td><code>lane/single_white_dashed</code></td><td>Vạch đơn trắng nét đứt — phân chia làn cùng chiều</td><td><span class="decision allowed">allowed</span></td></tr>
+        <tr><td><code>lane/single_white_solid</code></td><td>Vạch đơn trắng nét liền — phân chia làn cùng chiều</td><td><span class="decision not_allowed">not_allowed</span></td></tr>
+        <tr><td><code>lane/single_yellow_dashed</code></td><td>Vạch đơn vàng nét đứt — tim đường 2 chiều, phía nét đứt được vượt</td><td><span class="decision allowed">allowed</span></td></tr>
+        <tr><td><code>lane/single_yellow_solid</code></td><td>Vạch đơn vàng nét liền — tim đường 2 chiều hoặc mép đường</td><td><span class="decision not_allowed">not_allowed</span></td></tr>
+        <tr><td><code>lane/chevron_area</code></td><td>Vạch xương cá — vùng cấm đi vào</td><td><span class="decision not_allowed">not_allowed</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Quy tắc Polyline</p>
+    <h2>Vẽ vạch như thế nào</h2>
+    <ul>
+      <li>Polyline đi theo đúng <strong>tim/biên</strong> lane marking, không nối tắt qua vùng không có vạch</li>
+      <li>Giữ hướng vẽ nhất quán trong cùng dataset</li>
+      <li>Kết thúc polyline tại điểm lane marking không còn đủ bằng chứng thị giác</li>
+      <li>Không dùng Polygon thay cho lane marking chỉ vì vùng vạch có bề rộng — <strong>trừ</strong>
+        <code>chevron_area</code> (đây là vùng thật, phải dùng Polygon)</li>
+      <li>Không tự thêm class lane mới ngoài danh sách cho phép</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Edge case 001 · sample BDD15</p>
+    <h2>Vạch quá mờ — có thể bỏ qua</h2>
+    <div class="ec-grid">
+      <div><div class="ec-label">BDD15.jpg</div><img src="data/bdd100k/BDD15.jpg" alt="BDD15"></div>
+      <div class="ec-body">
+        <p><strong>Quan sát:</strong> vạch bị mờ đến mức không còn phân biệt được là loại nào.</p>
+        <p><strong>Quyết định:</strong> có thể <strong>không vẽ</strong> — không ép đoán khi bằng chứng thị giác
+          không đủ.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Edge case 002 · sample BDD26</p>
+    <h2>Ban đêm — không nhìn rõ làn bên trái</h2>
+    <div class="ec-grid">
+      <div><div class="ec-label">BDD26.jpg</div><img src="data/bdd100k/BDD26.jpg" alt="BDD26"></div>
+      <div class="ec-body">
+        <p><strong>Quan sát:</strong> trời tối, không nhìn rõ vạch bên trái thuộc làn nào.</p>
+        <p><strong>Quyết định:</strong> <strong>không đánh</strong> (không gán class/attribute) khi không đủ ánh
+          sáng để xác định.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Edge case 003 · sample BDD10</p>
+    <h2>Đoạn đường đang sửa — vạch liền bị mất một khoảng</h2>
+    <div class="ec-grid">
+      <div><div class="ec-label">BDD10.jpg</div><img src="data/bdd100k/BDD10.jpg" alt="BDD10"></div>
+      <div class="ec-body">
+        <p><strong>Quan sát:</strong> đoạn đường đang sửa làm vạch nét liền bị mất một khoảng ngắn.</p>
+        <p><strong>Quyết định:</strong> vẫn <strong>gán là vạch nét liền</strong> — khoảng mất do sửa đường không
+          đổi bản chất của vạch.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Edge case 005 · sample BDD22</p>
+    <h2>Vạch dài nhưng bị đứt quãng</h2>
+    <div class="ec-grid">
+      <div><div class="ec-label">BDD22.jpg</div><img src="data/bdd100k/BDD22.jpg" alt="BDD22"></div>
+      <div class="ec-body">
+        <p><strong>Quan sát:</strong> vạch dài, có các đoạn đứt quãng đều nhau.</p>
+        <p><strong>Quyết định:</strong> vẫn tính là <strong>vạch nét đứt</strong> — cần nhìn kỹ khoảng cách giữa
+          các đoạn để phân biệt với vạch liền bị mòn.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Edge case 006 · sample BDD16</p>
+    <h2>Vạch bị xe phía trước che khuất</h2>
+    <div class="ec-grid">
+      <div><div class="ec-label">BDD16.jpg</div><img src="data/bdd100k/BDD16.jpg" alt="BDD16"></div>
+      <div class="ec-body">
+        <p><strong>Quan sát:</strong> vạch đứt trắng phân làn đang chạy thẳng bị bánh xe/thân xe phía trước che
+          mất một khoảng.</p>
+        <p><strong>Quyết định:</strong> <span class="decision allowed">LABEL</span> — vẫn vẽ, gán
+          <code>occluded</code>.</p>
+        <p class="dim"><strong>Lý do:</strong> AI đọc output thực tế từ camera và có thể predict được vạch liền
+          phía sau xe che. Nếu <em>không</em> gán (bỏ đoạn bị che), model sẽ học sai rằng vạch không tồn tại ở
+          đó — trong khi thực tế vạch vẫn liên tục, chỉ là camera không thấy được.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <p class="kicker">Kết</p>
+    <h2>Điểm mấu chốt của guideline</h2>
+    <div class="grid2">
+      <div class="card allow">
+        <h3>Nguyên tắc xuyên suốt</h3>
+        <p>Không đoán khi bằng chứng không đủ (BDD15, BDD26). Bị che vẫn label nếu suy luận được hình dạng thật
+          (BDD16). Nhiễu môi trường (sửa đường, khoảng đứt tự nhiên) không đổi bản chất vạch (BDD10, BDD22).</p>
+      </div>
+      <div class="card deny">
+        <h3>Câu hỏi mở cho lớp</h3>
+        <p>Ranh giới giữa "che khuất nhưng vẫn suy luận được" và "mờ đến mức phải bỏ qua" nằm ở đâu? Đây là chỗ
+          guideline của nhóm cần tiếp tục làm rõ qua calibration.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<button class="nav-btn prev" type="button" id="prev" aria-label="Slide trước">‹</button>
+<button class="nav-btn next" type="button" id="next" aria-label="Slide sau">›</button>
+
+<footer class="bar">
+  <div class="hint"><kbd>←</kbd> <kbd>→</kbd> chuyển slide · <kbd>F</kbd> toàn màn hình</div>
+  <div class="lane-track" aria-hidden="true"><div class="lane-fill" id="lane"></div></div>
+  <div class="km"><b id="now">01</b> / <span id="all">10</span></div>
+</footer>
+
+<script>
+  const slides = Array.from(document.querySelectorAll(".slide"));
+  const now = document.getElementById("now");
+  const all = document.getElementById("all");
+  const lane = document.getElementById("lane");
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => s.classList.toggle("is-on", idx === i));
+    now.textContent = String(i + 1).padStart(2, "0");
+    all.textContent = String(slides.length).padStart(2, "0");
+    const span = slides.length < 2 ? 1 : i / (slides.length - 1);
+    lane.style.width = (span * 100) + "%";
+    slides[i].scrollTop = 0;
+    if (location.hash !== "#" + (i + 1)) history.replaceState(null, "", "#" + (i + 1));
+  }
+  function step(d) { show(i + d); }
+  document.getElementById("prev").addEventListener("click", () => step(-1));
+  document.getElementById("next").addEventListener("click", () => step(1));
+  document.addEventListener("keydown", (e) => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) { e.preventDefault(); step(1); }
+    else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); step(-1); }
+    else if (e.key === "Home") { e.preventDefault(); show(0); }
+    else if (e.key === "End") { e.preventDefault(); show(slides.length - 1); }
+    else if (e.key === "f" || e.key === "F") {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+  let startX = 0;
+  document.addEventListener("touchstart", (e) => { startX = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+  }, { passive: true });
+  const fromHash = parseInt(location.hash.slice(1), 10);
+  show(Number.isFinite(fromHash) ? fromHash - 1 : 0);
+</script>
+</body>
+</html>
