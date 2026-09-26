@@ -1,6 +1,6 @@
 # Annotation guideline — Vạch kẻ làn nào cho phép đổi làn
 
-**Version:** v4
+**Version:** v5
 
 <!--
 v0 = chưa có bản nháp. Đổi dòng Version ở trên thành v1 khi xong bản nháp đầu, v2 sau calibration, v3 sau blind
@@ -56,7 +56,13 @@ hiện tại và bắt đầu polyline mới tại điểm đổi kiểu — **k
 | `lane/single_solid` | Vạch đơn nét liền — phân chia làn cùng chiều | `not_allowed` |
 | `lane/double_dashed` | Vạch đôi nét đứt (hiếm) | `allowed` |
 | `lane/double_solid` | Vạch đôi nét liền — phân chia 2 chiều xe chạy ngược chiều nhau, cấm lấn làn/vượt | `not_allowed` |
-| `lane/chevron_area` | Vạch xương cá — vùng cấm đi vào | `not_allowed` |
+| `lane/chevron_area` | Vạch xương cá — **một vùng có diện tích** với nhiều nét sơn chéo song song bên trong (không phải 1 đường đơn), thường ở chỗ tách làn/gờ giảm tốc — cấm đi vào | `not_allowed` |
+
+> **v5 — làm rõ cách nhận diện `chevron_area`:** calibration đủ 5/5 người phát hiện 1 người (congminh) không nhận
+> ra vùng sọc chéo trên BDD16/BDD01 là `chevron_area`, vẽ nhầm thành 2 đoạn `single_solid` — vì guideline v4 chưa có
+> ví dụ minh hoạ riêng cho class này (mục 9 dòng BDD16 chỉ nói về occlusion, không nhắc chevron). Đặc điểm nhận
+> diện: **có diện tích/bề rộng thấy rõ, nhiều nét sơn chéo song song bên trong** — khác vạch kẻ làn thường (chỉ là
+> 1 đường mảnh, dùng Polyline).
 
 Mỗi class có 2 attribute:
 
@@ -144,7 +150,8 @@ Không áp dụng — task ảnh tĩnh.
 | sample_id | Thấy gì | Expected output | Rule áp dụng |
 |---|---|---|---|
 | BDD01 | Cao tốc nhiều làn, vạch trắng đứt + vạch vàng liền mép trái rõ | `single_dashed(allowed)`; `single_solid(not_allowed)` mép trái | Mục 4 |
-| BDD16 | Vạch đứt trắng bị bánh xe phía trước che một khoảng | `single_dashed(allowed)`, nối qua đoạn che, `needs_review=true` | Mục 6 |
+| BDD16 | Vạch đứt trắng bị bánh xe phía trước che một khoảng; **cùng ảnh còn có 1 vùng sọc chéo màu vàng bên trái (gore/chỗ tách làn)** | `single_dashed(allowed)` cho vạch đứt (nối qua đoạn che, `needs_review=true`) **+ `chevron_area(not_allowed)`** cho vùng sọc chéo (polygon riêng) | Mục 4 (v5), Mục 6 |
+| BDD01 | Cùng ảnh multi-lane còn có 1 vùng sọc chéo nhỏ khác (chevron) | `chevron_area(not_allowed)` | Mục 4 (v5) |
 | BDD17 | Vạch bị mờ do mưa | `single_*` chỉ phần nhìn thấy được | Mục 6 |
 | BDD13 | Vạch chuyển từ liền sang đứt rồi lại liền trên cùng luồng | 3 polyline riêng: `single_solid`, `single_dashed`, `single_solid` | Mục 6 |
 | BDD02 | Giao lộ chỉ có crosswalk, không có vạch phân làn | Không tạo object, tag `negative` | Mục 6 |
